@@ -27,19 +27,20 @@ const SideBar = ({ logout }) => {
 
 // Company header for the web app
 const CompanyHeader = () => (
-  <div className="flex flex-col items-center bg-gray-900 h-full p-10 w-72">
+  <div className="flex flex-col items-center bg-gray-900 h-full p-4 w-72">
     <div className="text-white font-bold text-xl mb-8">Buzzchat</div>
   </div>
 );
 
 const ChannelListContainer = () => {
   const [channelsExist, setChannelsExist] = useState(false);
+  const [selectedType, setSelectedType] = useState("messaging"); // Default to messaging
 
   useEffect(() => {
     // Fetch channels here and update channelsExist accordingly
     const areChannelsAvailable = true; // Replace with your logic
     setChannelsExist(areChannelsAvailable);
-  }, []);   //TODO :do it 
+  }, []);
 
   const logout = () => {
     cookies.remove("token");
@@ -53,34 +54,49 @@ const ChannelListContainer = () => {
     window.location.reload();
   };
 
+  const handleTypeChange = (type) => {
+    setSelectedType(type)
+  };
+  
+
   return (
     <div className="flex h-screen">
       <SideBar logout={logout} />
-      <div className="flex flex-1 flex-col bg-gray-700">
+      <div className="flex flex-1 flex-col bg-gray-200">
         <CompanyHeader />
-        
-        <div className="main_option_div grid">
-          <div className="direct_message max-h-40 overflow-y-auto p-2 rounded-md bg-gray-800">
-            {channelsExist ? (
-              <ChannelList
-                filters={{ type: "messaging" }}
-                List={(listProps) => <TeamChannelList {...listProps} type="messaging" />}
-                Preview={(previewProps) => <TeamChannelPreview {...previewProps} type="messaging" />}
-              />
-            ) : (
-              <p className="text-white text-center">No Direct Messages available.</p>
-            )}
+
+        <div className="flex flex-col flex-1 p-4">
+          <div className="flex mb-4">
+            <div
+              className={`cursor-pointer rounded-md p-2 mr-4 ${
+                selectedType === "messaging" ? "bg-blue-500 text-white" : "bg-gray-300"
+              }`}
+              onClick={() => handleTypeChange("messaging")}
+            >
+              Direct Message
+            </div>
+            <div
+              className={`cursor-pointer rounded-md p-2 ${
+                selectedType === "team" ? "bg-blue-500 text-white" : "bg-gray-300"
+              }`}
+              onClick={() => handleTypeChange("team")}
+            >
+              Team Channel
+            </div>
           </div>
 
-          <div className="team_message max-h-40 overflow-y-auto p-2 rounded-md bg-gray-800">
+          <h2 className="text-gray-600 font-semibold mb-2">
+            {selectedType === "messaging" ? "Direct Messages" : "Team Channels"}
+          </h2>
+          <div className="max-h-80 overflow-y-auto">
             {channelsExist ? (
               <ChannelList
-                filters={{ type: "team" }}
-                List={(listProps) => <TeamChannelList {...listProps} type="team" />}
-                Preview={(previewProps) => <TeamChannelPreview {...previewProps} type="team" />}
+                filters={{ type: selectedType }}
+                List={(listProps) => <TeamChannelList {...listProps} type={selectedType} />}
+                Preview={(previewProps) => <TeamChannelPreview {...previewProps} type={selectedType} />}
               />
             ) : (
-              <p className="text-white text-center">No Team Channels available.</p>
+              <p className="text-gray-600 text-center">You have no channels currently</p>
             )}
           </div>
         </div>
