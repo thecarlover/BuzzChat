@@ -36,6 +36,9 @@ const ChannelListContainer = () => {
   const [channelsExist, setChannelsExist] = useState(false);
   const [selectedType, setSelectedType] = useState("messaging"); // Default to messaging
 
+
+  //TODO:do logic
+
   useEffect(() => {
     // Fetch channels here and update channelsExist accordingly
     const areChannelsAvailable = true; // Replace with your logic
